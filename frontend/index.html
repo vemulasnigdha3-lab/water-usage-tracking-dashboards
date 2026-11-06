@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b6b66">
+  <meta name="description" content="Track household water meter readings and understand water use over time.">
+  <title>WaterWise | Water Usage Tracking Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard" aria-label="WaterWise home"><span class="brand-mark">💧</span><span><strong>WaterWise</strong><small>Usage tracker</small></span></a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="nav-links">
+        <a class="nav-link active" href="#dashboard" data-view="dashboard"><span>▦</span> Overview</a>
+        <a class="nav-link" href="#readings" data-view="readings"><span>◷</span> Meter readings</a>
+        <a class="nav-link" href="#settings" data-view="settings"><span>⚙</span> Goals & settings</a>
+      </nav>
+      <div class="sidebar-tip"><span class="tip-icon">🌱</span><strong>Every drop counts</strong><p>Small daily habits can make a meaningful difference.</p></div>
+      <div class="sidebar-footer"><span class="status-dot"></span> Local dashboard <small>Manual meter entry</small></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar"><div><p class="eyebrow">WATER MANAGEMENT</p><h1 id="page-title">Your water overview</h1></div><div class="topbar-right"><span class="today-chip" id="today-label">Today</span><button class="button button-primary" id="top-add-button" type="button">＋ Add reading</button></div></header>
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+      <section id="dashboard-view" class="view">
+        <div class="welcome-banner"><div><span class="banner-kicker">A CLEARER VIEW OF EVERY DROP</span><h2>Make water use easier to understand.</h2><p>Log your meter readings, spot changes, and work toward your conservation goal.</p><button class="button button-light" id="banner-add-button" type="button">＋ Record a meter reading</button></div><div class="water-art" aria-hidden="true"><span class="art-circle circle-one"></span><span class="art-circle circle-two"></span><span class="art-drop">💧</span><span class="art-spark">✦</span></div></div>
+        <div class="section-heading"><div><h2>Usage snapshot</h2><p>Calculated from your dated meter readings.</p></div><span class="muted-tag">m³ = cubic metres</span></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Latest meter reading</span><span class="stat-icon aqua">▤</span></div><div class="stat-value" id="stat-meter">—</div><div class="stat-foot" id="stat-meter-foot">Add your first reading</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Latest interval usage</span><span class="stat-icon coral">↗</span></div><div class="stat-value" id="stat-latest-usage">—</div><div class="stat-foot" id="stat-usage-foot">Needs two readings</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Average per interval</span><span class="stat-icon purple">◷</span></div><div class="stat-value" id="stat-average">—</div><div class="stat-foot">Based on up to 30 recent intervals</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Daily conservation target</span><span class="stat-icon green">◎</span></div><div class="stat-value" id="stat-target">0.500 <small>m³</small></div><div class="stat-foot"><a href="#settings">Adjust your target</a></div></article>
+        </div>
+        <div class="content-grid">
+          <section class="panel chart-panel"><div class="panel-heading"><div><h2>Recent usage trend</h2><p>Usage between consecutive readings</p></div><span class="legend"><i></i> Usage (m³)</span></div><div id="usage-chart" class="chart-wrap"><div class="empty-state compact"><span>▥</span><strong>Your trend will appear here</strong><p>Add at least two readings to see usage.</p></div></div><p class="chart-note">Each point is the difference between two consecutive meter readings. Dates may be several days apart, so compare interval length as well.</p></section>
+          <section class="panel goal-panel"><div class="panel-heading"><div><h2>Conservation focus</h2><p>Your current target</p></div><span class="goal-symbol">🌿</span></div><div class="goal-number" id="goal-number">0.500 <span>m³ / day</span></div><div class="goal-track"><div id="goal-progress" class="goal-progress"></div></div><p id="goal-copy" class="goal-copy">Set a goal and keep tracking.</p><div class="goal-divider"></div><div class="goal-tip"><span>💡</span><p><strong>Quick tip</strong><br>Check for dripping taps and record readings at a consistent time for clearer comparisons.</p></div><a class="text-link" href="#settings">Manage your goal <span>→</span></a></section>
+        </div>
+        <section class="panel recent-panel"><div class="panel-heading"><div><h2>Recent meter readings</h2><p>Your latest entries at a glance</p></div><a class="text-link" href="#readings">View all readings <span>→</span></a></div><div id="recent-table-container"><div class="loading-state">Loading readings…</div></div></section>
+      </section>
+
+      <section id="readings-view" class="view" hidden>
+        <div class="section-heading readings-heading"><div><h2>Meter reading log</h2><p>One cumulative meter reading per date. Usage is calculated from the previous reading.</p></div><button class="button button-primary" id="readings-add-button" type="button">＋ Add reading</button></div>
+        <section class="panel filters-panel"><div class="filters-grid"><label>From date<input type="date" id="filter-from"></label><label>To date<input type="date" id="filter-to"></label><label>Category<select id="filter-category"><option>All</option><option>Household</option><option>Bathroom</option><option>Kitchen</option><option>Laundry</option><option>Garden</option><option>Cleaning</option><option>Other</option></select></label><label>Search notes<input type="search" id="filter-search" placeholder="e.g. weekend, leak"></label><button class="button button-secondary" id="clear-filters" type="button">Clear filters</button></div></section>
+        <section class="panel"><div id="all-table-container"><div class="loading-state">Loading readings…</div></div></section>
+      </section>
+
+      <section id="settings-view" class="view" hidden>
+        <div class="section-heading"><div><h2>Goals & settings</h2><p>Make the dashboard fit your household or facility.</p></div></div>
+        <div class="settings-grid"><section class="panel settings-card"><div class="settings-icon">◎</div><h2>Conservation target</h2><p>Set an approximate water-use target in cubic metres (m³) per day. It is a reference goal; meter readings may cover more than one day.</p><form id="settings-form" novalidate><label for="daily-target">Daily target (m³)</label><input id="daily-target" name="daily_target_m3" type="number" min="0.001" max="100000" step="0.001" required><small class="field-help">Example: 0.500 m³ equals 500 litres.</small><div class="form-actions"><button class="button button-primary" type="submit">Save target</button></div></form></section><section class="panel settings-card info-card"><div class="settings-icon blue">ⓘ</div><h2>How this tracker works</h2><ul class="info-list"><li><strong>Enter cumulative readings.</strong><span>Use the total shown on the water meter, not an estimate of daily usage.</span></li><li><strong>Usage is calculated.</strong><span>Current meter value minus the previous dated value gives interval usage.</span></li><li><strong>Keep dates consistent.</strong><span>Record at a similar time where possible. A multi-day interval is not the same as one day.</span></li><li><strong>Your data is in Supabase.</strong><span>Entries are saved in the configured PostgreSQL database.</span></li></ul></section></div>
+      </section>
+      <footer class="page-footer"><span>WaterWise · Water Usage Tracking Dashboard</span><span>Designed for manual meter tracking <span class="footer-dot">•</span> <a href="#settings">Settings</a></span></footer>
+    </main>
+  </div>
+
+  <dialog id="reading-dialog" class="reading-dialog" aria-labelledby="dialog-title"><form id="reading-form" novalidate><div class="dialog-header"><div><p class="eyebrow">METER LOG</p><h2 id="dialog-title">Add a reading</h2></div><button class="icon-button" id="dialog-close" type="button" aria-label="Close dialog">✕</button></div><p class="dialog-intro">Copy the cumulative number displayed on your water meter.</p><input type="hidden" id="reading-id"><div class="form-grid"><label for="reading-date">Reading date <span class="required">*</span><input id="reading-date" name="reading_date" type="date" required></label><label for="meter-reading">Meter reading (m³) <span class="required">*</span><input id="meter-reading" name="meter_reading_m3" type="number" min="0" max="100000000" step="0.001" placeholder="e.g. 125.750" required><small class="field-help">The total meter value, not today's usage.</small></label><label for="reading-category">Category<select id="reading-category" name="category"><option>Household</option><option>Bathroom</option><option>Kitchen</option><option>Laundry</option><option>Garden</option><option>Cleaning</option><option>Other</option></select></label><label for="reading-notes">Notes <span class="optional">Optional</span><textarea id="reading-notes" name="notes" maxlength="500" rows="3" placeholder="Anything to remember about this reading"></textarea></label></div><div id="form-error" class="form-error" role="alert" hidden></div><div class="dialog-actions"><button class="button button-secondary" id="cancel-dialog" type="button">Cancel</button><button class="button button-primary" id="save-reading" type="submit">Save reading</button></div></form></dialog>
+  <div id="confirm-overlay" class="confirm-overlay" hidden><div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"><div class="confirm-icon">!</div><h2 id="confirm-title">Delete this reading?</h2><p>This action cannot be undone. The usage trend will be recalculated.</p><div class="dialog-actions"><button class="button button-secondary" id="confirm-cancel" type="button">Keep reading</button><button class="button button-danger" id="confirm-delete" type="button">Delete reading</button></div></div></div>
+</body>
+</html>
